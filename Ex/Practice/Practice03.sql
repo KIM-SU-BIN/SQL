@@ -120,8 +120,17 @@ SELECT  em.employee_id 사번,
         em.first_name 이름,
         department_name 부서명,
         ma.first_name "매니저 이름"
-FROM employees em left outer join employees ma
-on em.manager_id =  ma.employee_id
-LEFT OUTER JOIN departments de
-ON de.department_id = em.department_id
+FROM employees em left outer join employees ma --널값 포함
+on em.manager_id =  ma.employee_id --널값 삭제
+LEFT OUTER JOIN departments de --널값 다시 생기지 않나...?
+ON de.department_id = em.department_id --어찌되었든 삭제아닌가..?
 where em.manager_id is not null;
+
+--보승ver
+select e.employee_id 사번, 
+        e.first_name 이름, 
+        department_name 부서명, 
+        m.first_name "매니저 이름"
+from employees e, employees m, departments d
+where e.manager_id = m.employee_id  -- null값을 없애고
+and e.department_id = d.department_id(+); -- left outer 조인이랑 동일.
