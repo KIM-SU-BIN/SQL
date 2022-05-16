@@ -491,3 +491,168 @@ FROM employees em, departments de, jobs jo
 where em.department_id = de.department_id
 and em.job_id =  jo.job_id;
 
+-----------------------------------------------------------
+--<5월 16일 수업 PPT03>
+--< EQ join > : null값은 포함하지 않는다.
+SELECT  e.first_name,
+        e.department_id,
+        d.department_name,
+        d.department_id
+FROM employees e, departments d
+where e.department_id = d.department_id;
+
+--위 EQ join과 아래 left join 값 동일함!
+
+--< left outer join > : null값 포함
+SELECT  e.first_name,
+        e.department_id,
+        d.department_name,
+        d.department_id
+FROM employees e left outer join departments d
+on e.department_id = d.department_id;
+
+--<오라클 사용법> 107개
+SELECT  e.first_name,
+        e.department_id,
+        d.department_name,
+        d.department_id
+FROM employees e, departments d
+where e.department_id = d.department_id(+);
+
+
+--< right outer join > : null값 포함
+SELECT  e.first_name,
+        e.department_id,
+        d.department_name,
+        d.department_id
+FROM employees e right outer join departments d
+on e.department_id = d.department_id;
+
+--오라클 사용법 / ppt 참고
+SELECT  e.first_name,
+        e.department_id,
+        d.department_name,
+        d.department_id
+FROM employees e, departments d
+where e.department_id(+) = d.department_id;
+
+--<full outer join> 양쪽 모두 선택
+SELECT  e.first_name,
+        e.department_id, 
+        d.department_name, 
+        d.department_id
+FROM employees e full outer join departments d
+on e.department_id = d.department_id;
+
+--<self join> ==>> 매우 중요
+SELECT *
+FROM employees e1, employees e2
+where e1.manager_id = e2.employee_id;
+
+--<self join> 매니져의 이름과 전화번호
+SELECT e.employee_id,
+        e.first_name,
+        e.salary,
+        e.phone_number,
+        e.manager_id,
+        m.employee_id,
+        m.first_name,
+        m.phone_number
+FROM employees e,employees m
+where e.manager_id = m.employee_id;
+
+-----------------------------------------------------------
+
+--<05/16 PPT04 start>
+--Q. ‘Den’ 보다 급여를 많은 사람의 이름과 급여는?
+--1번째, Den 급여 찾기
+SELECT first_name,
+        salary
+FROM employees
+where first_name = 'Den'; --11000
+
+--2번째, 11000보다 급여 많은 사람의 이름과 금액
+SELECT first_name,
+        salary
+FROM employees
+where salary >= 11000
+order by salary desc;
+
+-- 최종 공식 (1번 + 2번)
+SELECT first_name,
+        salary
+FROM employees
+where salary >= (SELECT first_name,
+                 salary
+                 FROM employees
+                 where first_name = 'Den')
+order by salary desc;
+
+
+
+--Q. 급여를 가장 적게 받는 사람의 이름,급여,사원번호는?
+--1번째, 가장 적게 받는 사람
+SELECT min(salary)
+FROM employees;
+
+--2번째, 가장 적은 금액의 사람 정보 구하기
+SELECT  first_name,
+        salary,
+        employee_id
+FROM employees
+where salary <= 2100;
+
+--최종
+SELECT  first_name,
+        salary,
+        employee_id
+FROM employees
+where salary <= (SELECT min(salary)
+                FROM employees);
+                
+
+
+--평균 급여보다 적게 받는 사람의 이름, 급여를 출력하세요.
+--1번째, 평균 급여 구하기
+SELECT avg(salary)
+FROM employees;
+
+--2번째, 평균 급여보다 적게 받는 사람 정보
+SELECT first_name,
+        salary
+FROM employees
+where salary <= 6461.83177570;
+
+--최종
+SELECT first_name,
+        salary
+FROM employees
+where salary <= (SELECT avg(salary)
+                 FROM employees);
+                 
+/* <다중행> 
+Q. 부서번호가 110인 직원의 급여와 같은 모든 직원의 사번, 이름, 급여를 출력하세요*/
+--110 12000
+--110 2700
+SELECT *
+from employees
+where department_id = 110;
+
+--수동으로 수한 것 (값을 입력했기 때문에)
+SELECT employee_id,
+        first_name,
+        salary
+from employees
+where salary = 12008
+or salary = 8300;
+
+--자동으로 구하기 
+SELECT employee_id,
+        first_name,
+        salary
+FROM employees
+where salary in (SELECT salary
+                 from employees
+                 where department_id = 110);
+
+
