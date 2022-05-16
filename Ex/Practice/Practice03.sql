@@ -126,6 +126,16 @@ LEFT OUTER JOIN departments de --널값 다시 생기지 않나...?
 ON de.department_id = em.department_id --어찌되었든 삭제아닌가..?
 where em.manager_id is not null;
 
+--위에 ver revise
+SELECT  em.employee_id 사번,
+        em.first_name 이름,
+        department_name 부서명,
+        ma.first_name "매니저 이름"
+FROM employees ma, employees em 
+LEFT OUTER JOIN departments de
+ON de.department_id = em.department_id
+where em.manager_id =  ma.employee_id;
+
 --보승ver
 select e.employee_id 사번, 
         e.first_name 이름, 
