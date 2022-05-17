@@ -77,41 +77,58 @@ order by salary desc;
 /*5.각 부서별로 최고의 급여를 받는 사원의 직원번호(employee_id), 이름(first_name)과 급여(salary) 부서번호(department_id)를 조회하세요 
 단 조회결과는 급여의 내림차순으로 정렬되어 나타나야 합니다.  
 조건절비교, 테이블조인 2가지 방법으로 작성하세요 (11건)*/
+
 --부서별로 최고 급여 받는 직원
-SELECT MAX(salary)
+SELECT MAX(salary),department_id
 FROM employees
 GROUP BY department_id;
 
---최종
-SELECT *
-FROM ;
+--최종< 조건절 비교 >
+SELECT  employee_id, 
+        first_name, 
+        salary, 
+        department_id
+FROM employees
+where (salary, department_id) in (SELECT MAX(salary), 
+                                         department_id
+                                  FROM employees
+                                  GROUP BY department_id) 
+ORDER BY salary desc;
 
-
-
-
+--최종< 테이블조인 >
+SELECT  employee_id, 
+        first_name, 
+        e.salary, 
+        e.department_id
+FROM employees e, (SELECT MAX(salary) salary, 
+                          department_id
+                   FROM employees
+                   GROUP BY department_id)s 
+where e.department_id = s.department_id
+and e.salary = s.salary
+ORDER BY salary desc;
 
 /*6.각 업무(job) 별로 연봉(salary)의 총합을 구하고자 합니다. 
 연봉 총합이 가장 높은 업무부터 업무명(job_title)과 연봉 총합을 조회하시오 (19건)*/
 --업무별 그룹
-SELECT job_title
+SELECT job_title 
 FROM jobs
 group by job_title;
 
---최종
-SELECT j.job_title 업무명, salary*12 연봉
-FROM employees e, (SELECT job_title
-                    FROM jobs
-                    group by job_title)j
-where e.job_id = j.job_id                    
-order by salary*12 desc;
-
-
-SELECT j.job_title 업무명, salary*12 연봉
+--업무별 급여의 총합 (title이 필요함)
+SELECT sum(salary)
 FROM employees 
-where job_title in (SELECT job_title
-                    FROM jobs
-                    group by job_title)                  
-order by salary*12 desc;
+group by job_id;
+
+--최종
+SELECT  jo.job_title 업무명, 
+        em.salary 연봉
+FROM employees em, jobs jo
+where salary in (SELECT sum(salary)
+                    FROM employees
+                    group by job_id)                  
+order by em.salary desc;
+
 
 /*7.자신의 부서 평균 급여보다 급여(salary)이 많은 직원의 직원번호(employee_id), 이름(first_name)과 급여(salary)을 조회하세요 (38건)*/
 --부서별 평균급여
