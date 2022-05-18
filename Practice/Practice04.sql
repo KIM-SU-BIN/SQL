@@ -149,11 +149,23 @@ FROM employees e, (SELECT avg(salary) salary
 where e.salary > s.salary
 and e.department_id = s.department_id;
                          
-      
 /*8.직원 입사일이 11번째에서 15번째의 직원의 사번, 이름, 급여, 입사일을 입사일 순서로 출력하세요*/
-SELECT rownum, employee_id, first_name, salary, hire_date
-FROM (select employee_id, first_name, salary, hire_date
-      from employees 
-      order by salary desc)
-where rownum>=11 
-and rownum<=15;
+SELECT  ro.rn,
+        ro.employee_id,
+        ro.first_name,
+        ro.salary,
+        ro.hire_date
+from (SELECT  rownum rn, 
+                hi.employee_id, 
+                hi.first_name, 
+                hi.salary, 
+                hi.hire_date
+        FROM (select employee_id,           --입사일 순서대로
+                        first_name, 
+                        salary, 
+                        hire_date
+              from employees 
+              order by hire_date asc) hi
+              )ro
+where rn >= 11 
+and rn <= 15;
