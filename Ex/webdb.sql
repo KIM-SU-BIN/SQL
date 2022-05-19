@@ -1,4 +1,3 @@
---0519 오전 테이블 생성 및 삭제
 create table author(
     author_id number(10),
     author_name varchar2(100) not null, -- 제약조건 : NULL값 입력불가
@@ -79,3 +78,124 @@ FROM book;
 
 SELECT *
 FROM author;
+
+drop table book;
+drop table author;
+
+---------------------------------
+
+-- <다시시작> 
+--삭제
+DELETE FROM author;
+drop table author;
+
+--시퀀스 삭제
+DROP SEQUENCE seq_author_id;
+
+--작가 테이블 만들기
+CREATE TABLE author (
+  author_id	NUMBER(10),
+  author_name VARCHAR2(100) NOT NULL,
+  author_desc VARCHAR2(500),
+  PRIMARY KEY (author_id)	
+);
+
+-- 작가 시퀀스 만들기
+create sequence seq_author_id
+INCREMENT BY 1
+start with 1
+nocache;            --정확한 의미는?
+
+
+--데이터
+insert into author
+values (seq_author_id.nextval,'박경리', '토지 작가');
+
+insert into author
+values (seq_author_id.nextval,'이문열', '삼국지');
+
+insert into author
+values (seq_author_id.nextval,'기안84', '웹툰작가');
+
+insert into author
+values (seq_author_id.nextval,'김수빈', 'WOW');
+
+insert into author
+values (seq_author_id.nextval,'유재석', '개그맨');
+
+--출력하기
+SELECT *
+FROM author;
+
+--시퀀스 조회
+SELECT * 
+FROM user_sequences;
+
+--현재 시퀀스 
+SELECT seq_author_id.currval 
+FROM dual;
+
+--다음 시퀀스
+SELECT seq_author_id.nextval 
+FROM dual;
+
+--저장하기
+/*여태 한 것은 반영된 것이 아님. 컴텀 끄면 사라짐
+커밋을 해야 저장이 완료
+<커밋이 반영하는 데이터의 범위 완전 중요!!!! > */
+commit;
+
+--뒤로가기 (커밋했던 시점으로 돌아감.)
+rollback;
+
+-----------------------------------------------------------
+
+--작가 테이블 삭제 / dml이 아니기 때문에 삭제후 롤백해도 살릴 수 없음
+drop table author;
+--작가 시퀀스 삭제
+drop sequence seq_author_id;
+
+--작가 테이블 만들기
+CREATE TABLE author (
+  author_id	NUMBER(10),
+  author_name VARCHAR2(100) NOT NULL,
+  author_desc VARCHAR2(500),
+  PRIMARY KEY (author_id)	
+);
+-- 작가 시퀀스 만들기 
+create sequence seq_author_id
+INCREMENT BY 1
+start with 1
+nocache;  
+
+--작가 데이터 추가
+INSERT INTO author
+values(seq_author_id.nextval, '박경리', '토지작가');
+
+insert into author
+values (seq_author_id.nextval,'이문열', '삼국지');
+
+insert into author
+values (seq_author_id.nextval,'기안84', '웹툰작가');
+
+update author
+set author_name = '자취84',
+    author_desc = '나혼자산다 출연'
+where author_id = 3;
+
+--출력하기
+SELECT *
+FROM author;
+
+--시퀀스 조회
+SELECT * 
+FROM user_sequences;
+
+--현재 시퀀스 
+SELECT seq_author_id.currval 
+FROM dual;
+
+--다음 시퀀스
+SELECT seq_author_id.nextval 
+FROM dual;
+
