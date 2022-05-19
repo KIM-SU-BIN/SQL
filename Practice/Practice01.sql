@@ -34,7 +34,8 @@ where max_salary >= 10000
 order by max_salary desc;
 
 
---5.월급이 14000 미만 10000 이상인 직원의 이름(first_name), 월급, 커미션퍼센트 를  월급순(내림차순) 출력하세오. 단 커미션퍼센트 가 null 이면 0 으로 나타내시오.
+--5.월급이 14000 미만 10000 이상인 직원의 이름(first_name), 월급, 커미션퍼센트 를  월급순(내림차순) 출력하세오.
+-- 단 커미션퍼센트 가 null 이면 0 으로 나타내시오.
 SELECT first_name,
         salary,
         commission_pct
