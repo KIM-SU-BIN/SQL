@@ -175,9 +175,27 @@ and em.department_id = de.department_id; --중복제거
 /*문제7.평균연봉(salary)이 가장 높은 부서 직원들의 직원번호(employee_id), 이름(firt_name), 
 성(last_name)과  업무(job_title), 연봉(salary)을 조회하시오.*/
 
-SELECT salary
-FROM employees, departments 
-where max(salary) <= avg(salary);
+select  em.employee_id 사번,
+        em.first_name 이름,
+        em.last_name 성,
+        jo.job_title 업무,
+        em.salary 연봉,
+        tas.mas 평균연봉
+from employees em , jobs jo ,(select max(salary) mas
+                             from (select  avg(salary) salary
+                                          ,department_id
+                                  from employees
+                                  group by department_id)) tas
+where em.department_id in (select  
+                                department_id
+                          from employees
+                          group by department_id
+                          having avg(salary) in (select max(salary)
+                                                 from (select  
+                                                        avg(salary) salary,
+                                                            department_id
+                                                       from employees
+                                                       group by department_id)))
 
 
 
